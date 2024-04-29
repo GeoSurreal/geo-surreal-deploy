@@ -1,0 +1,18 @@
+
+- name: "Check for Geo Surreal installation"
+  stat:
+    path: /geo-surreal/geo-surreal
+  register: geo_surreal
+
+- name: Stop Geo Surreal
+  shell: "./geo-surreal --stop > /dev/null 2>&1"
+  args:
+    chdir: /geo-surreal
+  when:
+  - geo_surreal.stat.exists
+
+- name: Stop Geo Surreal
+  shell: "docker stop $(docker container ls -q --filter ancestor=geo-sur)"
+  become: true
+  when:
+  - not geo_surreal.stat.exists

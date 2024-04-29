@@ -1,0 +1,15 @@
+---
+###########################
+#
+#    Stop Geo Surreal
+#
+###########################
+- name: Stop Geo Surreal
+  hosts: geo_sur_started
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+  - name: Stop Geo Surreal
+    import_tasks:
+      file: ../tasks/geo-surreal/stop.yml

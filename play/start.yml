@@ -1,0 +1,15 @@
+---
+###########################
+#
+#    Start Geo Surreal
+#
+###########################
+- name: Start Geo Surreal
+  hosts: geo_sur_started
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+  - name: Start Geo Surreal
+    import_tasks:
+      file: ../tasks/geo-surreal/start.yml

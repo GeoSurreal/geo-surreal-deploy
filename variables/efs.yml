@@ -1,0 +1,5 @@
+# volumes:
+# - file_system_id: <_file_system_id_>
+#   region: us-west-2
+#   source_point: /
+#   mount_point: /geo-surreal/data/efs

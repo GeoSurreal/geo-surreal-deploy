@@ -1,0 +1,92 @@
+---
+###########################
+#
+#  Provision a new server
+#
+###########################
+- name: Provision an EC2 server
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - include_vars:
+      file: ../variables/provision.yml
+      name: ec2
+
+  - name: Provision an EC2 server
+    vars:
+      ec2_state: started
+    import_tasks:
+      file: ../tasks/provision/ec2_create.yml
+    register: server
+
+  - name: Create a group to login dynamically to an EC2 Instance
+    add_host:
+      hostname: "{{ item.public_ip_address }}"
+      ec2_instance_id: "{{ item.instance_id }}"
+      ec2_public_dns_name: "{{ item.public_dns_name }}"
+      ansible_ssh_private_key_file: .keys/default.pem
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+      groupname: geo_sur
+    loop: "{{ server.instances }}"
+
+  - name: Create hosts' dict
+    set_fact:
+      aws_hosts: "{{ aws_hosts | default({}) | combine({ item : {
+        'ec2_instance_id': hostvars[item].ec2_instance_id,
+        'ec2_public_dns_name': hostvars[item].ec2_public_dns_name,
+        'ansible_ssh_private_key_file': '.keys/default.pem',
+        'ansible_ssh_common_args': '-o StrictHostKeyChecking=no'
+        } }) }}"
+    loop: "{{ groups.geo_sur }}"
+
+  - name: Write hosts to a file
+    copy:
+      dest: ../hosts/geo_sur_started.yml
+      content:  "{{ { 'geo_sur_started': { 'hosts': aws_hosts }} | to_nice_yaml }}"
+
+
+###########################
+#
+#    Set up the server
+#
+###########################
+- name: Set up the server
+  hosts: geo_sur
+  remote_user: ubuntu
+  gather_facts: true
+
+  tasks:
+  - name: Install the system software
+    import_tasks:
+      file: ../tasks/setup/install.yml
+
+  - include_vars:
+      file: ../variables/geo-surreal.yml
+      name: geo_surreal
+
+  - include_vars:
+      file: ../variables/ecr.yml
+      name: ecr
+
+  - name: Load the application container image
+    import_tasks:
+      file: ../tasks/geo-surreal/load.yml
+
+  # Add EFS volumes to mount automatically
+  - include_vars:
+      file: ../variables/efs.yml
+      name: efs
+
+  - name: Mount EFS volumes
+    import_tasks:
+      file: ../tasks/setup/efs.yml
+
+  - name: Set up Geo Surreal execution directory
+    import_tasks:
+      file: ../tasks/geo-surreal/setup.yml
+
+  - name: Start Geo Surreal
+    import_tasks:
+      file: ../tasks/geo-surreal/start.yml

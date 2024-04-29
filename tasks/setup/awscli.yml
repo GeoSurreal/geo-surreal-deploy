@@ -1,0 +1,30 @@
+
+- name: "AWS CLI: install unzip and pip"
+  apt:
+    pkg:
+      - unzip
+      - python3-pip
+    state: present
+    update_cache: true
+  become: true
+
+- name: "AWS CLI: Load the archive"
+  get_url:
+    url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+    dest: ./awscliv2.zip
+    mode: '644'
+
+- name: "AWS CLI: Unzip the archive"
+  command:
+    cmd: unzip -q -o ./awscliv2.zip
+
+- name: "AWS CLI: install"
+  command:
+    cmd: ./aws/install --update
+  become: true
+
+- name: "AWS CLI: install python libraries"
+  pip:
+    name:
+      - botocore
+      - boto3

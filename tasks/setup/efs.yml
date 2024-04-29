@@ -1,0 +1,19 @@
+- name: "EFS: Install an NFS client"
+  apt:
+    name: nfs-common
+    state: latest
+    update_cache: true
+  become: true
+
+- name: Mount EFS volumes
+  mount:
+    name: "{{ item.mount_point }}"
+    src: "{{ item.file_system_id }}.efs.{{ item.region }}.amazonaws.com:{{ item.source_point | default('/') }}"
+    fstype: nfs4
+    opts: nfsvers=4.1
+    state: mounted
+  loop: "{{ efs.volumes }}"
+  when:
+  - efs is defined
+  - efs.volumes is defined
+  - efs.volumes | length > 0

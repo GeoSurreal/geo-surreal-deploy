@@ -1,0 +1,15 @@
+---
+###########################
+#
+#  Pull an updated image
+#
+###########################
+- name: Pull Geo Surreal image
+  hosts: geo_sur_started
+  remote_user: ubuntu
+  gather_facts: false
+
+  tasks:
+  - name: Pull Geo Surreal image
+    import_tasks:
+      file: ../tasks/geo-surreal/load.yml

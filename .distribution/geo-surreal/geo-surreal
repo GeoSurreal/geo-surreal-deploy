@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$1" = "--stop" ]
+then
+    # stop all the docker containers
+    sudo docker stop $(sudo docker ls -q –-filter ancestor=geo-sur)
+else
+    # start the docker container
+    CWD=`pwd`
+
+    sudo docker run --rm \
+        -v $CWD/data:/data \
+        -v $CWD/logs:/geo-sur/logs \
+        -v $CWD/.database:/geo-sur/.database \
+        -v $CWD/config.yml:/geo-sur/config.yml \
+        -p 4567:80 \
+        -d \
+        geo-sur
+        # -w /geo-sur --entrypoint="" \
+        # geo-sur ./geo-sur
+fi

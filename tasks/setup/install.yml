@@ -1,0 +1,15 @@
+- name: Install the GPU driver
+  import_tasks:
+    file: nvidia-driver.yml
+
+- name: Install Docker
+  import_tasks:
+    file: docker.yml
+
+- name: Install Nvidia container toolkit
+  import_tasks:
+    file: ./nvidia-container-toolkit.yml
+
+- name: Install AWS CLI
+  import_tasks:
+    file: ./awscli.yml

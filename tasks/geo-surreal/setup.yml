@@ -1,0 +1,50 @@
+- name: "Geo Surreal: install unzip"
+  apt:
+    pkg:
+      - unzip
+    state: present
+    update_cache: true
+  become: true
+
+- name: "Geo Surreal: Create working directory"
+  shell: |
+    mkdir /geo-surreal
+    chown {{ ansible_user }}:{{ ansible_user }} /geo-surreal
+    chown 644 /geo-surreal
+  become: true
+
+- name: "Geo Surreal: Copy working directory"
+  copy:
+    src: "{{ playbook_dir }}/../.distribution/geo-surreal/"
+    dest: /geo-surreal
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '644'
+  become: true
+
+- name: "Geo Surreal: load additional distribution files"
+  block:
+  - name: "Geo Surreal: load additional distribution files"
+    get_url:
+      url: "{{ geo_surreal.distribution }}"
+      dest: /geo-surreal/.distribution.zip
+      mode: '644'
+
+  - name: "Geo Surreal: unzip distribution files"
+    command:
+      cmd: unzip -q -o ./.distribution.zip
+      chdir: /geo-surreal
+
+  - name: "Geo Surreal: remove temporary files"
+    file:
+      path: /geo-surreal/.distribution.zip
+      state: absent
+
+  when:
+  - geo_surreal is defined
+  - geo_surreal.distribution is defined
+
+- name: "Geo Surreal: set executable mode"
+  file:
+    path: /geo-surreal/geo-surreal
+    mode: a+x

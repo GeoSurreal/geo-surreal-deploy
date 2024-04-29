@@ -1,0 +1,22 @@
+---
+###########################
+#
+#     Remove servers
+#
+###########################
+- name: Remove the servers
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - include_vars:
+        file: ../variables/provision.yml
+        name: ec2
+
+    - name: Remove servers
+      vars:
+        ec2_state: terminated
+      import_tasks:
+        file: ../tasks/provision/ec2_create.yml
+      register: server

@@ -1,0 +1,12 @@
+
+- name: "GPU driver: add PPA repository"
+  apt_repository:
+    repo: ppa:graphics-drivers/ppa
+  become: true
+
+- name: "GPU driver: install"
+  apt:
+    name: nvidia-driver-535
+    state: latest
+    update_cache: true
+  become: true

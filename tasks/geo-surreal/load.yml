@@ -1,0 +1,26 @@
+- name: "Geo Surreal: get login to ECR"
+  command:
+    cmd: "aws ecr get-login-password --region {{ ecr.region }}"
+  register: ECR_password
+
+- name: "Geo Surreal: login to ECR"
+  vars:
+    registry: "{{ ecr.account }}.dkr.ecr.{{ ecr.region }}.amazonaws.com"
+  command:
+    cmd: "docker login --username AWS --password-stdin {{ registry }}"
+    stdin: "{{ ECR_password.stdout }}"
+  become: true
+
+- name: "Geo Surreal: pull the image"
+  vars:
+    registry: "{{ ecr.account }}.dkr.ecr.{{ ecr.region }}.amazonaws.com"
+  command:
+    cmd: "docker pull {{ registry }}/{{ ecr.image_name }}"
+  become: true
+
+- name: "Geo Surreal: tag the image"
+  vars:
+    registry: "{{ ecr.account }}.dkr.ecr.{{ ecr.region }}.amazonaws.com"
+  command:
+    cmd: "docker tag {{ registry }}/{{ ecr.image_name }} {{ geo_surreal.image_name }}"
+  become: true

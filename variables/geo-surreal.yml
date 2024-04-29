@@ -1,0 +1,5 @@
+# a container image name with Geo Surreal application
+image_name: geo-sur
+
+# S3 location for a client-specific distribution packet
+# distribution:
