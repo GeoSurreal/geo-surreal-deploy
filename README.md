@@ -15,10 +15,6 @@
 
 ## Deploy the application
 
-- Run `deploy` playbook to check:
-
-      ansible-playbook play/deploy.yml --check
-
 - Run `deploy` playbook to provision and set up the required services (e.g. EC2 instance) and install the application:
 
       ansible-playbook play/deploy.yml
@@ -50,7 +46,24 @@
 
 - Install [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
-- authenticate in your AWS account (see below for permissions required) via AWS CLI
+- authenticate in your AWS account (see below for permissions required) via AWS CLI.
+
+If you use AWS SSO, add the profile to `~/.aws/config`:
+
+    [profile devops]
+    sso_session = ORG
+    sso_account_id = <__ACCOUNT_ID__>
+    sso_role_name = role-devops
+
+    [sso-session ORG]
+    sso_start_url = https://<___ID___>.awsapps.com/start/#
+    sso_region = us-east-1
+    sso_registration_scopes = sso:account:access
+
+And then set the default profile:
+
+    export AWS_DEFAULT_PROFILE=devops
+
 
 ### AWS Account:
 

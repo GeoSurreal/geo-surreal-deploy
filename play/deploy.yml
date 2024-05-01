@@ -21,6 +21,13 @@
       file: ../tasks/provision/ec2_create.yml
     register: server
 
+  - name: Check if an instance if provisioned
+    assert:
+      that:
+        - server.instances is defined
+      fail_msg: "EC2 instance is _NOT_ provisioned! Please check the permissions and run again."
+      success_msg: "EC2 instance is provisioned"
+
   - name: Create a group to login dynamically to an EC2 Instance
     add_host:
       hostname: "{{ item.public_ip_address }}"
