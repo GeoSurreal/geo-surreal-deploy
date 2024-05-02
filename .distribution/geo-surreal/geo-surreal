@@ -9,13 +9,12 @@ else
     CWD=`pwd`
 
     sudo docker run --rm \
+        --gpus all \
         -v $CWD/data:/data \
         -v $CWD/logs:/geo-sur/logs \
         -v $CWD/.database:/geo-sur/.database \
         -v $CWD/config.yml:/geo-sur/config.yml \
-        -p 4567:80 \
-        -d \
-        geo-sur
-        # -w /geo-sur --entrypoint="" \
-        # geo-sur ./geo-sur
+        -p 4567:4567 \
+        -w /geo-sur --entrypoint="" \
+        geo-sur ./geo-sur
 fi
