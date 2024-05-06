@@ -1,3 +1,11 @@
+- name: "Geo Surreal: set ulimit"
+  pam_limits:
+    domain: "{{ ansible_user }}"
+    limit_type: soft
+    limit_item: nofile
+    value: '1048576'
+  become: true
+    
 - name: "Geo Surreal: install unzip"
   apt:
     pkg:
