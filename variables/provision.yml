@@ -4,7 +4,7 @@ instance_name: "Geo Surreal"
 instance_type: g6.4xlarge
 
 # Ubuntu 22.04
-ami_image_id: ami-08116b9957a259459
+ami_image_id: ami-0cfa2ad4242c3168d
 
 # provides permission to download the application container image
 instance_role: geo-surreal-deploy
@@ -12,11 +12,11 @@ instance_role: geo-surreal-deploy
 # Specify VPC and subnet if needed
 # vpc_id: default
 # subnet_id: default
-region: us-west-2
-availability_zone: us-west-2a
+region: us-east-1
+availability_zone: us-east-1a
 
 # key to connect to the instances over SSH
 key_name: default
 
 # root volume size
-volume_size: 50
+volume_size: 100
